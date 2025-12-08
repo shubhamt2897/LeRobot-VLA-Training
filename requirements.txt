@@ -1,0 +1,8 @@
+# LeRobot - HuggingFace Robotics Framework
+lerobot
+
+# Intel RealSense Camera Support
+pyrealsense2
+
+# Optional: For training visualization
+wandb
