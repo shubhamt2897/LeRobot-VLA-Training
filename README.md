@@ -73,7 +73,7 @@ LeRobot-VLA-Training/
 
 ```bash
 # Clone this repository
-git clone https://github.com/YOUR_USERNAME/LeRobot-VLA-Training.git
+git clone https://github.com/shubhamt2897/LeRobot-VLA-Training.git
 cd LeRobot-VLA-Training
 
 # Install dependencies (includes LeRobot)
