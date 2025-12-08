@@ -8,11 +8,16 @@
 
 This project was developed during the **Robot Hackathon** organised by **RoboTUM** with the goal of training a Vision-Language-Action (VLA) model to make the **LeRobot SO-101 robot arm write numbers**. The project explores two distinct solutions:
 
-### Solution 1: ACT Policy Training
-Traditional imitation learning approach using the **Action Chunking Transformer (ACT)** policy trained on teleoperated demonstrations.
+### Solution 1: GROOT N1.5 VLA Training
+Vision-Language-Action approach using **GROOT N1.5** - a language-conditioned policy that can understand text instructions like "write digit 5". Unlike ACT (Action Chunking Transformer), GROOT supports language input, which is essential for our use case where we need to specify which digit to write.
 
 ### Solution 2: GPT Agent for Multi-Digit Writing
 An agentic approach using **GPT** to decode and generate parquet files for multi-digit number writing, enabling the robot to write arbitrary number sequences by understanding digit translations.
+
+### Why GROOT over ACT?
+- **ACT** is vision-to-action only - it cannot accept language/text instructions
+- **GROOT** is a true VLA model that conditions actions on both vision AND language
+- For digit writing, we need to tell the robot "write 3" or "write 7" - this requires language understanding
 
 ### 🖥️ Development Environment
 Training was performed on **NVIDIA's Brev platform** GPU Instance.
@@ -159,15 +164,19 @@ LeRobot supports loading datasets directly from the HuggingFace Hub. Use the `--
 
 ## 🧠 Training Policies
 
-### Available Policies
+### VLA Models Comparison
 
-| Policy | Description | Best For |
-|--------|-------------|----------|
-| **ACT** | Action Chunking Transformer | Precise manipulation tasks |
-| **Diffusion** | Diffusion Policy | Complex multi-modal actions |
-| **VQBET** | VQ-BeT with GPT backbone | Diverse behavior modeling |
-| **TDMPC** | Temporal Difference MPC | Reinforcement learning |
-| **SmolVLA** | Small Vision-Language-Action | Lightweight deployment |
+This hackathon focused on **Vision-Language-Action (VLA)** model implementation. VLA models are essential for tasks requiring language instructions - like telling the robot "write digit 5". Here's a comparison of available VLA models:
+
+| VLA Model | Architecture | Language Encoder | Vision Encoder | Parameters | Best For |
+|-----------|-------------|------------------|----------------|------------|----------|
+| **GROOT N1.5** | Transformer | LLM-based | Vision Transformer | Large | High-quality manipulation with rich language understanding |
+| **SmolVLA** | Lightweight Transformer | Smaller LM | Efficient ViT | ~1B | Edge deployment, faster inference |
+| **OpenVLA** | LLaMA + ViT | LLaMA | SigLIP | 7B | General-purpose robotics |
+| **RT-2** | PaLM-E based | PaLM | ViT | 55B | Complex reasoning tasks |
+| **Octo** | Transformer | T5 | ResNet | 93M | Lightweight, fast fine-tuning |
+
+
 
 ### Dataset Folder Naming
 
@@ -198,51 +207,43 @@ This creates a new dataset `S101_all_digits/` containing all episodes from digit
 
 ### Training on Combined Dataset
 
-After merging, train on the combined dataset:
+After merging, train GROOT on the combined dataset with language conditioning:
 
 ```bash
-# Train ACT policy on ALL digits (combined dataset)
+# Train GROOT N1.5 on ALL digits (combined dataset)
+# GROOT uses language prompts like "write digit 5" to condition the policy
 # We used 50000 steps - increase for better results
 python -m lerobot.scripts.train \
   --dataset.repo_id=datasets/S101_all_digits \
   --dataset.root=./datasets \
-  --policy.type=act \
-  --output_dir=outputs/train/act_all_digits \
+  --policy.type=groot_n1 \
+  --output_dir=outputs/train/groot_all_digits \
   --training.num_steps=50000 \
   --device=cuda
 ```
 
-### Training with Different Policies
+### Alternative: SmolVLA (Lightweight VLA)
 
 ```bash
-# Diffusion Policy (use more steps for better results, e.g., 100000+)
+# SmolVLA - smaller VLA model, also supports language input
 python -m lerobot.scripts.train \
   --dataset.repo_id=datasets/S101_all_digits \
   --dataset.root=./datasets \
-  --policy.type=diffusion \
-  --output_dir=outputs/train/diffusion_all_digits \
-  --training.num_steps=50000 \
-  --device=cuda
-
-# VQBET Policy
-python -m lerobot.scripts.train \
-  --dataset.repo_id=datasets/S101_all_digits \
-  --dataset.root=./datasets \
-  --policy.type=vqbet \
-  --output_dir=outputs/train/vqbet_all_digits \
+  --policy.type=smolvla \
+  --output_dir=outputs/train/smolvla_all_digits \
   --training.num_steps=50000 \
   --device=cuda
 ```
 
-### Training with HuggingFace Hub Dataset
+### Note on Non-VLA Policies
+
+Policies like ACT, Diffusion, and VQBET do NOT support language input. They would require training separate models for each digit, which is inefficient:
 
 ```bash
-python -m lerobot.scripts.train \
-  --dataset.repo_id=lerobot/pusht \
-  --policy.type=act \
-  --output_dir=outputs/train/act_pusht \
-  --training.num_steps=50000 \
-  --device=cuda
+# Example: ACT would need separate training per digit (NOT recommended)
+# python -m lerobot.scripts.train --policy.type=act --dataset.repo_id=datasets/S101_pm_0  # Only digit 0
+# python -m lerobot.scripts.train --policy.type=act --dataset.repo_id=datasets/S101_pm_1  # Only digit 1
+# ... and so on - inefficient!
 ```
 
 ---
@@ -282,10 +283,11 @@ The `lerobot/data/` folder contains pre-generated combined number datasets:
 lerobot-replay --robot.type=so101_follower --robot.port=COM3 --robot.id=Follower --dataset.repo_id=shubhamt0802/S101_0 --dataset.local_files_only=true --episode=0
 ```
 
-### Evaluate Trained Policy
+### Evaluate Trained GROOT Policy
 
 ```powershell
-lerobot-eval --policy.path=outputs/act_digit_0/checkpoint --robot.type=so101_follower --robot.port=COM3 --robot.id=Follower --robot.cameras="{ front: {type: intelrealsense, serial_number_or_name: 218622273423, width: 848, height: 480, fps: 30, use_depth: true} }"
+# Evaluate GROOT with language prompt
+lerobot-eval --policy.path=outputs/groot_all_digits/checkpoint --robot.type=so101_follower --robot.port=COM3 --robot.id=Follower --robot.cameras="{ front: {type: intelrealsense, serial_number_or_name: 218622273423, width: 848, height: 480, fps: 30, use_depth: true} }"
 ```
 
 ---
@@ -319,17 +321,19 @@ During this hackathon project, we gained hands-on experience with:
 
 ### Vision-Language-Action (VLA) Models
 - Understanding how VLA models bridge vision, language, and robotic actions
-- Training end-to-end policies that map visual observations to robot actions
+- Why language conditioning is essential for tasks requiring instruction-following
+- GROOT N1.5 as a powerful VLA that accepts text prompts to guide robot behavior
+- Key difference: ACT/Diffusion are vision-only, while GROOT/SmolVLA accept language
 
 ### Imitation Learning
 - Collecting human demonstrations through teleoperation
 - Training policies to mimic expert behavior from demonstration data
 - Understanding the importance of data quality and quantity for policy performance
 
-### Diffusion Models for Robotics
-- How diffusion policies generate action sequences through iterative denoising
-- Comparison between ACT (transformer-based) and Diffusion policies
-- Trade-offs between different policy architectures
+### Policy Architecture Trade-offs
+- **ACT**: Fast, precise, but no language input - need separate model per task
+- **GROOT**: Language-conditioned, single model can handle multiple tasks via prompts
+- Choosing the right architecture based on task requirements
 
 ### Teleoperation
 - Setting up leader-follower robot arm systems
@@ -347,7 +351,8 @@ During this hackathon project, we gained hands-on experience with:
 
 - [LeRobot Documentation](https://huggingface.co/docs/lerobot/index)
 - [SO-101 Tutorial](https://huggingface.co/docs/lerobot/so101)
-- [ACT Policy Paper](https://arxiv.org/abs/2304.13705)
+- [GROOT N1 - NVIDIA](https://developer.nvidia.com/isaac/groot)
+- [Vision-Language-Action Models](https://huggingface.co/blog/vla)
 - [HuggingFace LeRobot Hub](https://huggingface.co/lerobot)
 
 
