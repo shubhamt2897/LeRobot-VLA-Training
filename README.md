@@ -93,7 +93,7 @@ pip install pyrealsense2  # Intel RealSense support
 
 ### 🖥️ Setup CLI Tool (Work in Progress)
 
-I am  develoworking on an interactive CLI tool to simplify robot setup and calibration:
+I am working on developing an interactive CLI tool to simplify robot setup and calibration:
 
 ```powershell
 # Install CLI dependencies
