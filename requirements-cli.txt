@@ -1,0 +1,15 @@
+# LeRobot Setup CLI Tool - Additional Dependencies
+# Install with: pip install -r requirements-cli.txt
+
+# TUI Framework (interactive CLI with arrow keys and mouse)
+textual>=0.41.0
+
+# Beautiful terminal output
+rich>=13.0.0
+
+# Serial port detection
+pyserial>=3.5
+# Add at the end of your existing requirements.txt
+textual>=0.41.0
+rich>=13.0.0
+pyserial>=3.5
