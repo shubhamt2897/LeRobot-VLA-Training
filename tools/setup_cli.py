@@ -311,7 +311,19 @@ class LeRobotSetupApp(App):
         Binding("q", "quit", "Quit", priority=True),
         Binding("r", "reset", "Reset Config"),
         Binding("c", "show_config", "Show Config"),
+        Binding("up", "focus_previous", "Previous", show=False),
+        Binding("down", "focus_next", "Next", show=False),
+        Binding("k", "focus_previous", "Previous", show=False),
+        Binding("j", "focus_next", "Next", show=False),
     ]
+    
+    def action_focus_previous(self) -> None:
+        """Move focus to previous widget"""
+        self.screen.focus_previous()
+    
+    def action_focus_next(self) -> None:
+        """Move focus to next widget"""
+        self.screen.focus_next()
     
     def __init__(self):
         super().__init__()
@@ -667,8 +679,48 @@ Cameras: {len(self.config.get('cameras', []))}
         input("\nPress Enter to return to app...")
 
 
+def enable_windows_vt_mode():
+    """Enable Virtual Terminal mode on Windows for arrow key support"""
+    if platform.system() != "Windows":
+        return True
+    
+    try:
+        import ctypes
+        kernel32 = ctypes.windll.kernel32
+        
+        # Get handles for stdin and stdout
+        STD_INPUT_HANDLE = -10
+        STD_OUTPUT_HANDLE = -11
+        stdin_handle = kernel32.GetStdHandle(STD_INPUT_HANDLE)
+        stdout_handle = kernel32.GetStdHandle(STD_OUTPUT_HANDLE)
+        
+        # Get current console modes
+        stdin_mode = ctypes.c_ulong()
+        stdout_mode = ctypes.c_ulong()
+        kernel32.GetConsoleMode(stdin_handle, ctypes.byref(stdin_mode))
+        kernel32.GetConsoleMode(stdout_handle, ctypes.byref(stdout_mode))
+        
+        # Enable Virtual Terminal Input (0x0200) and Output (0x0004)
+        ENABLE_VIRTUAL_TERMINAL_INPUT = 0x0200
+        ENABLE_VIRTUAL_TERMINAL_PROCESSING = 0x0004
+        
+        # Set new console modes
+        kernel32.SetConsoleMode(stdin_handle, stdin_mode.value | ENABLE_VIRTUAL_TERMINAL_INPUT)
+        kernel32.SetConsoleMode(stdout_handle, stdout_mode.value | ENABLE_VIRTUAL_TERMINAL_PROCESSING)
+        
+        return True
+    except Exception as e:
+        print(f"⚠ Could not enable Windows VT mode: {e}")
+        print("If arrow keys don't work, try running in Windows Terminal")
+        return False
+
+
 def main():
     """Main entry point"""
+    
+    # Enable Windows Virtual Terminal for proper arrow key support
+    enable_windows_vt_mode()
+    
     print("\n🤖 LeRobot Setup CLI v2.0")
     print("=" * 60)
     print("Checking LeRobot installation...")

@@ -91,6 +91,26 @@ pip install git+https://github.com/huggingface/lerobot.git
 pip install pyrealsense2  # Intel RealSense support
 ```
 
+### 🖥️ Setup CLI Tool (Work in Progress)
+
+I am  develoworking on an interactive CLI tool to simplify robot setup and calibration:
+
+```powershell
+# Install CLI dependencies
+pip install textual rich
+
+# Run the interactive setup
+python tools/setup_cli.py
+```
+
+**Features:**
+- 🎮 Interactive TUI with keyboard and mouse support
+- ⚙️ Port configuration wizard
+- 📷 Camera setup helper
+- ✅ Step-by-step calibration guide
+
+> ⚠️ **Note:** This tool is a work in progress. Arrow key navigation and some features may not work perfectly on all terminals. For best results, use **Anaconda Prompt**, **Windows Terminal**, or **PowerShell 7+**.
+
 ### 1. Find Robot Ports
 
 ```powershell
