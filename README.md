@@ -40,27 +40,21 @@ Training was performed on **NVIDIA's Brev platform** GPU Instance.
 These recordings show the key stages of the project:
 
 <p align="center">
-  <strong>Data collection demo</strong><br>
-  <video controls style="width: 100%; max-width: 720px;">
-    <source src="https://github.com/user-attachments/assets/9f86905c-af35-4b65-92bf-f00c939439ac" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
+  <a href="https://github.com/user-attachments/assets/9f86905c-af35-4b65-92bf-f00c939439ac">
+    <img src="images%20and%20video/data-collection-thumb.svg" width="720" alt="Data collection demo video">
+  </a>
 </p>
 
 <p align="center">
-  <strong>Inference proof 1</strong><br>
-  <video controls style="width: 100%; max-width: 720px;">
-    <source src="https://github.com/user-attachments/assets/b7a7ff82-aeb1-406b-9b39-724c852b0323" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
+  <a href="https://github.com/user-attachments/assets/b7a7ff82-aeb1-406b-9b39-724c852b0323">
+    <img src="images%20and%20video/inference-proof-1-thumb.svg" width="720" alt="Inference proof 1 video">
+  </a>
 </p>
 
 <p align="center">
-  <strong>Inference proof 2</strong><br>
-  <video controls style="width: 100%; max-width: 720px;">
-    <source src="https://github.com/user-attachments/assets/85674be6-c093-440d-a099-960d1ce04d6a" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
+  <a href="https://github.com/user-attachments/assets/85674be6-c093-440d-a099-960d1ce04d6a">
+    <img src="images%20and%20video/inference-proof-2-thumb.svg" width="720" alt="Inference proof 2 video">
+  </a>
 </p>
 
 ---

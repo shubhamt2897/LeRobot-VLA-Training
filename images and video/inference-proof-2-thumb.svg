@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-label="Inference proof 2 thumbnail">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#3f1d2e"/>
+      <stop offset="55%" stop-color="#5b233c"/>
+      <stop offset="100%" stop-color="#7c2d12"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fb7185"/>
+      <stop offset="100%" stop-color="#f43f5e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#bg)"/>
+  <circle cx="1020" cy="145" r="215" fill="#fb718522"/>
+  <circle cx="250" cy="590" r="175" fill="#f43f5e18"/>
+  <rect x="120" y="110" width="1040" height="500" rx="36" fill="#020617" opacity="0.28"/>
+  <rect x="160" y="150" width="960" height="420" rx="28" fill="#0b1220" stroke="#64748b" stroke-width="3"/>
+  <circle cx="640" cy="360" r="110" fill="url(#accent)" opacity="0.96"/>
+  <polygon points="610,305 610,415 720,360" fill="#fff"/>
+  <text x="640" y="510" text-anchor="middle" fill="#f8fafc" font-family="Arial, Helvetica, sans-serif" font-size="54" font-weight="700">Inference Proof 2</text>
+  <text x="640" y="565" text-anchor="middle" fill="#cbd5e1" font-family="Arial, Helvetica, sans-serif" font-size="28">Click to open the video</text>
+</svg>
